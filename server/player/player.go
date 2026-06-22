@@ -10,6 +10,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/df-mc/dragonfly/server/player/ddui"
 	"github.com/df-mc/dragonfly/server/player/debug"
 	"github.com/df-mc/dragonfly/server/player/hud"
 
@@ -407,6 +408,15 @@ func (p *Player) SendForm(f form.Form) {
 // happens.
 func (p *Player) CloseForm() {
 	p.session().CloseForm()
+}
+
+func (p *Player) SendDDUIForm(f ddui.Form) {
+	p.session().SendDDUIForm(f)
+}
+
+// CloseDDUIForms closes all active data-driven UI forms for the player.
+func (p *Player) CloseDDUIForms() {
+	p.session().CloseDDUIForms()
 }
 
 // ShowCoordinates enables the vanilla coordinates for the player.
