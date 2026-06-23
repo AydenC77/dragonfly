@@ -55,6 +55,15 @@ type Config struct {
 	// players cannot. By returning false in the Allow method, for example if
 	// the player has been banned, will prevent the player from joining.
 	Allower Allower
+	// Proxy enables proxy mode, which allows the server to be run behind a proxy. When
+	// enabled, the server will trust the XUIDs and other identity data sent by
+	// the proxy. This should only be enabled if the server is indeed running
+	// behind a trusted proxy that handles authentication. REQUIRES: ForwardingSecret to be set.
+	Proxy bool
+	// ForwardingSecret is the secret used to sign XUIDs for the Allower. If left
+	// empty, the default secret will be used. This secret should be kept
+	// private and not shared with anyone, as it can be used to forge XUIDs.
+	ForwardingSecret string
 	// AuthDisabled specifies if XBOX Live authentication should be disabled.
 	// Note that this should generally only be done for testing purposes or for
 	// local games. Allowing players to join without authentication is generally
@@ -146,8 +155,14 @@ func (conf Config) New() *Server {
 	if conf.PlayerProvider == nil {
 		conf.PlayerProvider = player.NopProvider{}
 	}
+	if conf.ForwardingSecret == "" && conf.Proxy {
+		conf.Log.Error("config: proxy mode enabled but no forwarding secret set, this is a security risk exiting!")
+		os.Exit(1)
+	} else if conf.ForwardingSecret != "" && conf.Proxy {
+		conf.AuthDisabled = true
+	}
 	if conf.Allower == nil {
-		conf.Allower = allower{}
+		conf.Allower = allower{ForwardingSecret: conf.ForwardingSecret, Proxy: conf.Proxy}
 	}
 	if conf.WorldProvider == nil {
 		conf.WorldProvider = world.NopProvider{}
