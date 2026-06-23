@@ -8,8 +8,15 @@
   # The name as it shows up in the server list. Minecraft colour codes may be used in this name to format the
   # name of the server.
   Name = "Dragonfly Server"
-  # AuthEnabled controls whether players must be connected to Xbox Live in order to join the server.
+  # AuthEnabled controls whether players must be connected to Xbox Live in order to join the server. 
+  # Must be disabled if the server is running behind a proxy, as the proxy will handle authentication.
   AuthEnabled = true
+  # Proxy controls whether the server is running behind a proxy. If true, the server will expect to be behind a proxy and will not perform authentication on its own. 
+  # Requires the ForwardingSecret to be set And AuthEnabled to be false,
+  Proxy = false
+  # ForwardingSecret is the secret used to verify that the server is behind a proxy. 
+  # If the server is running behind a proxy, this value must be set to the same value as the proxy's forwarding secret.
+  ForwardingSecret = ""
   # DisableJoinQuitMessages specifies if join/quit messages should be broadcast when players join the server.
   DisableJoinQuitMessages = false
   # MuteEmoteChat specifies if the player emote chat should be muted or not.
